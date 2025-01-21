@@ -8,7 +8,7 @@
 __pycache__
 
 # Robot Framework results
-robot/BRIOLabs-Nimba-Test/results/
+robot/BRIOLabs-Litify-Issue-Tracker/results/
 
 # Salesforce cache
 .sf/

@@ -1,9 +1,12 @@
 minimum_cumulusci_version: '3.78.0'
 project:
-    name: BRIOLabs-Nimba-Test
+    name: PROJECT_NAME
     package:
-        name: BRIOLabs-Nimba-Test
-        api_version: '62.0'
+        name: PROJECT_NAME
+        api_version: '55.0'
+    dependencies:
+        - version_id: 04t1T00000072EQ ### Version 27.3
+        ###- version_id: 04t1T0000003w1I ### Version 29
     git:
         default_branch: 'main'
         prefix_feature: 'feature/'
@@ -11,18 +14,69 @@ project:
         prefix_release: 'release/'
     source_format: sfdx
 
+sources:
+    litify:
+        github: https://github.com/nimba-solutions/litify-mdapi
+        allow_remote_code: True
+
+### Tasks ######################################################################
 tasks:
     robot:
         options:
-            suites: robot/BRIOLabs-Nimba-Test/tests
+            suites: robot/PackageTests/tests
             options:
-                outputdir: robot/BRIOLabs-Nimba-Test/results
+                outputdir: robot/PackageTests/results
 
     robot_testdoc:
         options:
-            path: robot/BRIOLabs-Nimba-Test/tests
-            output: robot/BRIOLabs-Nimba-Test/doc/BRIOLabs-Nimba-Test_tests.html
+            path: robot/PackageTests/tests
+            output: robot/PackageTests/doc/Package_tests.html
 
     run_tests:
         options:
             required_org_code_coverage_percent: 75
+
+    deploy_dev_config:
+        class_path: cumulusci.tasks.salesforce.Deploy
+        options:
+            path: unpackaged/config/dev/src
+
+    assign_litify_permission_sets:
+        class_path: cumulusci.tasks.salesforce.users.permsets.AssignPermissionSets
+        group: "LitifyMDAPI"
+        options:
+            api_names: LitifyMDAPI
+    
+    load_sample_data:
+        options:
+            drop_missing_schema: True
+
+###  Create Package Permission Set and Assign Here  ################################
+    assign_unpackaged_permission_sets:
+        class_path: cumulusci.tasks.salesforce.users.permsets.AssignPermissionSets
+        options:
+            api_names: PERMISSION_SET_NAME_HERE
+
+### Flows ######################################################################
+flows:
+
+    config_dev:
+        steps:
+            3.0:
+                task: deploy_dev_config
+            # 3.1:
+            #    task: assign_unpackaged_permission_sets
+            3.3: 
+                flow: litify:configure_mdapi
+    
+    config_apextest:
+        steps:
+            3.1:
+                task: assign_unpackaged_permission_sets
+            3.2: 
+                flow: litify:configure_mdapi
+    
+    config_managed:
+        steps:
+            3.1:
+                task: assign_unpackaged_permission_sets
