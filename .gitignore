@@ -51,3 +51,9 @@ $RECYCLE.BIN/
 .idea
 .project
 .settings
+
+
+#LitifyMDAPI Logs
+log.html
+output.xml
+report.html

@@ -16,7 +16,8 @@ project:
 
 sources:
     litify:
-        github: https://github.com/nimba-solutions/litify-mdapi
+        #github: https://github.com/nimba-solutions/litify-mdapi
+        github: https://github.com/brio-drose/litify-mdapi
         allow_remote_code: True
 
 ### Tasks ######################################################################
